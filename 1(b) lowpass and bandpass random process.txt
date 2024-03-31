@@ -1,0 +1,33 @@
+% Parameters
+Fs = 1000;              % Sampling frequency (Hz)
+T = 1/Fs;               % Sampling period
+t = 0:T:1;              % Time vector
+L = length(t);          % Length of signal
+f_cutoff_low = 50;      % Lowpass cutoff frequency (Hz)
+f_center = 200;         % Center frequency for bandpass (Hz)
+f_width = 50;           % Width of bandpass (Hz)
+
+% Generate lowpass random process
+x_lowpass = randn(1, L); % Gaussian white noise
+[b, a] = butter(6, f_cutoff_low/(Fs/2)); % Design Butterworth filter
+x_lowpass = filter(b, a, x_lowpass); % Apply lowpass filter
+
+% Generate bandpass random process
+x_bandpass = randn(1, L); % Gaussian white noise
+f_low = f_center - f_width/2;
+f_high = f_center + f_width/2;
+[b, a] = butter(6, [f_low/(Fs/2), f_high/(Fs/2)], 'bandpass'); % Design Butterworth bandpass filter
+x_bandpass = filter(b, a, x_bandpass); % Apply bandpass filter
+
+% Plotting
+figure;
+subplot(2,1,1);
+plot(t, x_lowpass);
+title('Lowpass Random Process');
+xlabel('Time (s)');
+ylabel('Amplitude');
+subplot(2,1,2);
+plot(t, x_bandpass);
+title('Bandpass Random Process');
+xlabel('Time (s)');
+ylabel('Amplitude');
